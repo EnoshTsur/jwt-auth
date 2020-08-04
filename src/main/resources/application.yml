@@ -1,0 +1,7 @@
+spring:
+  h2:
+    console:
+      enabled: true
+
+
+secret: pttoeHVck3aNtb8O1QDW6RItrD1XJtgruUgtp/W48Ck=
