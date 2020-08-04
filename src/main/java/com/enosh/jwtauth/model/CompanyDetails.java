@@ -1,4 +1,4 @@
-package com.enosh.jwtauth.services;
+package com.enosh.jwtauth.model;
 
 import com.enosh.jwtauth.model.Company;
 import lombok.AllArgsConstructor;
