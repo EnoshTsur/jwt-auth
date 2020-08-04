@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 @AllArgsConstructor
@@ -58,6 +59,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        Optional.ofNullable(request.getHeader("Authorization"))
+                .map(header -> header.substring(7))
+                .map(jwtService::decodeJwt)
+                .filter(this::validateToken)
+                .map(this::mapToUserDetails)
+                .map(this::mapToToken)
+                .ifPresent(setContextAuth(request));
 
+        chain.doFilter(request, response);
     }
 }
