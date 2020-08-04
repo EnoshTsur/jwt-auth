@@ -15,9 +15,4 @@ class JwtauthApplicationTests {
     void contextLoads() {
     }
 
-    @Test
-    void printSecret(){
-        service.printSecret();
-    }
-
 }
