@@ -14,6 +14,7 @@ public class CompanyDetailsService implements UserDetailsService {
 
     private final CompanyRepository repository;
 
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return repository.findByEmail(email)
