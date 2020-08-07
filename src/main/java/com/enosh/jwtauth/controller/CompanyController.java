@@ -1,6 +1,7 @@
 package com.enosh.jwtauth.controller;
 
 import com.enosh.jwtauth.model.LoginDto;
+import com.enosh.jwtauth.model.Scope;
 import com.enosh.jwtauth.repository.CompanyRepository;
 import com.enosh.jwtauth.services.CompanyDetailsService;
 import com.enosh.jwtauth.services.JwtService;
@@ -14,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+
+import static com.enosh.jwtauth.model.Scope.*;
 
 @AllArgsConstructor
 @RestController
@@ -42,14 +45,15 @@ public class CompanyController {
         }
 
         return ResponseEntity.ok(
-                companyRepository.findByEmail(loginDto.getEmail())
-                .map(jwtService::encodeJwt)
-                .orElse("")
+                companyRepository
+                        .findByEmail(loginDto.getEmail())
+                        .map(jwtService::encodeCompany)
+                        .orElse("")
         );
     }
 
     @GetMapping("/me")
     public String getPrincipal(Principal principal) {
-        return "<h1> Company: " + principal + " </h1>";
+        return "<h1> Company: " + principal.getName() + " </h1>";
     }
 }

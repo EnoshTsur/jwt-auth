@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 
 @AllArgsConstructor
 @EnableWebSecurity
@@ -22,7 +23,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CompanyDetailsService companyDetailsService;
     private final JwtFilter jwtFilter;
-
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
