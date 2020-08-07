@@ -1,5 +1,6 @@
 package com.enosh.jwtauth.model;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,7 +8,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@AllArgsConstructor
 public class AdminDetails implements UserDetails {
+
+    private final UserEntity userEntity;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -16,12 +20,12 @@ public class AdminDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return "1234";
+        return userEntity.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return "admin";
+        return userEntity.getEmail();
     }
 
     @Override

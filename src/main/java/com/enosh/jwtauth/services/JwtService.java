@@ -29,6 +29,8 @@ public class JwtService {
     private String SECRET_KEY;
 
     public static final String SCOPE = "scope";
+    public static final String ID = "id";
+    public static final String NAME = "name";
 
     public Function<Claims, String> extractSubject = Claims::getSubject;
 
@@ -44,12 +46,13 @@ public class JwtService {
         byte[] secretBytes = parseBase64Binary(SECRET_KEY);
         Key key = new SecretKeySpec(secretBytes, HS256.getJcaName());
 
-        Map<String, Object> claims = Map.of(SCOPE, scope);
+        Map<String, Object> claims = Map.of(
+                SCOPE, scope,
+                ID, subject.getId(),
+                NAME, subject.getEmail()
+        );
 
         return Jwts.builder()
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setId(String.valueOf(subject.getId()))
-                .setSubject(subject.getEmail())
                 .setClaims(claims)
                 .signWith(HS256, key)
                 .compact();

@@ -15,7 +15,6 @@ import javax.persistence.Table;
 public class Company extends UserEntity {
 
     private String name;
-    private String password;
 
     public Company(String email, String name, String password) {
         this.email = email;

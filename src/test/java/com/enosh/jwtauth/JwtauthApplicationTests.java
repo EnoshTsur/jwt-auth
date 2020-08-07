@@ -18,15 +18,15 @@ class JwtauthApplicationTests {
 
     @Test
     void encode(){
-        Company company = new Company(
-                "aroma@cool",
-                "cool-aroma",
-                "123"
-        );
-        company.setId(1L);
-
-        String jwt = service.encodeJwt(company);
-        System.out.println(jwt);
+//        Company company = new Company(
+//                "aroma@cool",
+//                "cool-aroma",
+//                "123"
+//        );
+//        company.setId(1L);
+//
+//        String jwt = service.encodeJwt(company);
+//        System.out.println(jwt);
     }
 
     @Test

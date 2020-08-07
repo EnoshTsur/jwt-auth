@@ -1,5 +1,6 @@
 package com.enosh.jwtauth.filter;
 
+import com.enosh.jwtauth.services.AdminDetailsService;
 import com.enosh.jwtauth.services.CompanyDetailsService;
 import com.enosh.jwtauth.services.JwtService;
 import io.jsonwebtoken.Claims;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final CompanyDetailsService companyDetailsService;
+    private final AdminDetailsService adminDetailsService;
     private final JwtService jwtService;
 
     private UserDetails mapToUserDetails(Claims claims) {

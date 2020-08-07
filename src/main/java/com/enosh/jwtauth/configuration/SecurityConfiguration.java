@@ -1,6 +1,7 @@
 package com.enosh.jwtauth.configuration;
 
 import com.enosh.jwtauth.filter.JwtFilter;
+import com.enosh.jwtauth.services.AdminDetailsService;
 import com.enosh.jwtauth.services.CompanyDetailsService;
 import com.enosh.jwtauth.services.JwtService;
 import lombok.AllArgsConstructor;
@@ -22,11 +23,16 @@ import org.springframework.web.client.RestTemplate;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CompanyDetailsService companyDetailsService;
+    private final AdminDetailsService adminDetailsService;
+
     private final JwtFilter jwtFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(companyDetailsService);
+        auth
+                .userDetailsService(companyDetailsService)
+                .and()
+                .userDetailsService(adminDetailsService);
     }
 
     @Override
@@ -39,15 +45,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/company/**").hasRole("COMPANY")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
-        .and()
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
 
     @Bean
-    public PasswordEncoder getPasswordEncoder(){
+    public PasswordEncoder getPasswordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
 

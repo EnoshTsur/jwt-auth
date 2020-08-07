@@ -7,3 +7,6 @@ spring:
 
 
 secret: pttoeHVck3aNtb8O1QDW6RItrD1XJtgruUgtp/W48Ck=
+
+admin-username: admin
+admin-password: admin
