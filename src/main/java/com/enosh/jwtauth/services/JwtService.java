@@ -4,17 +4,12 @@ import com.enosh.jwtauth.model.Scope;
 import com.enosh.jwtauth.model.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -32,26 +27,29 @@ public class JwtService {
     public static final String ID = "id";
     public static final String NAME = "name";
 
-    public Function<Claims, String> extractSubject = Claims::getSubject;
+    public Function<Claims, String> extractName = claims ->
+            String.valueOf(claims.get(NAME));
+
+    public Function<Claims, Scope> extractScope = claims ->
+            Scope.valueOf(String.valueOf(claims.get(SCOPE)));
 
     public <T extends UserEntity> String encodeCompany(T t) {
         return encodeJwt(t, COMPANY);
     }
 
     public <T extends UserEntity> String encodeAdmin(T t) {
+        t.setId(0L);
         return encodeJwt(t, ADMIN);
     }
 
     public <T extends UserEntity> String encodeJwt(T subject, Scope scope) {
         byte[] secretBytes = parseBase64Binary(SECRET_KEY);
         Key key = new SecretKeySpec(secretBytes, HS256.getJcaName());
-
         Map<String, Object> claims = Map.of(
                 SCOPE, scope,
                 ID, subject.getId(),
                 NAME, subject.getEmail()
         );
-
         return Jwts.builder()
                 .setClaims(claims)
                 .signWith(HS256, key)
@@ -66,6 +64,6 @@ public class JwtService {
     }
 
     public boolean validateToken(Claims claims, UserDetails userDetails) {
-        return extractSubject.apply(claims).equals(userDetails.getUsername());
+        return extractName.apply(claims).equals(userDetails.getUsername());
     }
 }

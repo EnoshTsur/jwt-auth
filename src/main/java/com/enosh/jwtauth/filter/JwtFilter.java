@@ -1,5 +1,6 @@
 package com.enosh.jwtauth.filter;
 
+import com.enosh.jwtauth.model.Scope;
 import com.enosh.jwtauth.services.AdminDetailsService;
 import com.enosh.jwtauth.services.CompanyDetailsService;
 import com.enosh.jwtauth.services.JwtService;
@@ -20,6 +21,8 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import static com.enosh.jwtauth.model.Scope.*;
+
 @AllArgsConstructor
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -29,10 +32,12 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
     private UserDetails mapToUserDetails(Claims claims) {
-        return jwtService
-                .extractSubject
-                .andThen(companyDetailsService::loadUserByUsername)
-                .apply(claims);
+        Scope scope = jwtService.extractScope.apply(claims);
+        String username = jwtService.extractName.apply(claims);
+
+        return scope.equals(ADMIN) ?
+                adminDetailsService.loadUserByUsername(username) :
+                companyDetailsService.loadUserByUsername(username);
     }
 
     private boolean validateToken(Claims claims) {
@@ -63,8 +68,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        Consumer<UsernamePasswordAuthenticationToken> consumerName = x -> {};
-
         Optional.ofNullable(request.getHeader("Authorization"))
                 .map(header -> header.substring(7))
                 .map(jwtService::decodeJwt)
