@@ -18,6 +18,7 @@ import java.security.Principal;
 
 import static com.enosh.jwtauth.model.Scope.*;
 
+@CrossOrigin(origins = "*")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/company")
