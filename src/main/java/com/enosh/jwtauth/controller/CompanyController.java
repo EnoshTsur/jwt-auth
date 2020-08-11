@@ -1,6 +1,7 @@
 package com.enosh.jwtauth.controller;
 
 import com.enosh.jwtauth.model.LoginDto;
+import com.enosh.jwtauth.model.ResponseDto;
 import com.enosh.jwtauth.model.Scope;
 import com.enosh.jwtauth.repository.CompanyRepository;
 import com.enosh.jwtauth.services.CompanyDetailsService;
@@ -30,7 +31,7 @@ public class CompanyController {
     private final JwtService jwtService;
 
     @PostMapping("/authenticate")
-    public ResponseEntity authenticate(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<ResponseDto<String>> authenticate(@RequestBody LoginDto loginDto) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -42,15 +43,21 @@ public class CompanyController {
         } catch (BadCredentialsException e) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
-                    .body(e.getMessage());
+                    .body(
+                            new ResponseDto<>(
+                                    false,
+                                    e.getMessage())
+                    );
         }
 
         return ResponseEntity.ok(
                 companyRepository
                         .findByEmail(loginDto.getEmail())
                         .map(jwtService::encodeCompany)
-                        .orElse("")
+                        .map(token -> new ResponseDto<>(true, token))
+                        .orElse(new ResponseDto<>(false, ""))
         );
+
     }
 
     @GetMapping("/me")
