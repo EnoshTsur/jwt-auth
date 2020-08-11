@@ -1,6 +1,7 @@
 package com.enosh.jwtauth.controller;
 
 import com.enosh.jwtauth.model.LoginDto;
+import com.enosh.jwtauth.model.ResponseDto;
 import com.enosh.jwtauth.model.UserEntity;
 import com.enosh.jwtauth.services.JwtService;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +35,7 @@ public class AdminController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity authenticate(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<ResponseDto<String>> authenticate(@RequestBody LoginDto loginDto) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -46,18 +47,26 @@ public class AdminController {
         } catch (BadCredentialsException e) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
-                    .body(e.getMessage());
+                    .body(new ResponseDto<>(
+                            false,
+                            e.getMessage()
+                    ));
         }
 
         return ResponseEntity.ok(
-                jwtService.encodeAdmin(
-                        new UserEntity(username, password)
+                new ResponseDto<>(true,
+                        jwtService.encodeAdmin(
+                                new UserEntity(
+                                        username,
+                                        password
+                                )
+                        )
                 )
         );
     }
 
     @GetMapping("/me")
-    public String me(Principal principal){
+    public String me(Principal principal) {
         return "<h1><marquee>" + principal.getName() + "</marquee></h1>";
     }
 
