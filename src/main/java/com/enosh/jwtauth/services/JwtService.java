@@ -46,7 +46,7 @@ public class JwtService {
         byte[] secretBytes = parseBase64Binary(SECRET_KEY);
         Key key = new SecretKeySpec(secretBytes, HS256.getJcaName());
         Map<String, Object> claims = Map.of(
-                SCOPE, scope,
+                SCOPE, scope.name().toLowerCase(),
                 ID, subject.getId(),
                 NAME, subject.getEmail()
         );

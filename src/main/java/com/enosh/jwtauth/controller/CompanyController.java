@@ -1,5 +1,6 @@
 package com.enosh.jwtauth.controller;
 
+import com.enosh.jwtauth.model.Company;
 import com.enosh.jwtauth.model.LoginDto;
 import com.enosh.jwtauth.model.ResponseDto;
 import com.enosh.jwtauth.model.Scope;
@@ -29,6 +30,16 @@ public class CompanyController {
     private final CompanyDetailsService companyDetailsService;
     private final CompanyRepository companyRepository;
     private final JwtService jwtService;
+
+    @PostMapping("/signup")
+    public ResponseEntity<ResponseDto<String>> signup(@RequestBody Company company) {
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        true,
+                        jwtService.encodeCompany(companyRepository.save(company))
+                )
+        );
+    }
 
     @PostMapping("/authenticate")
     public ResponseEntity<ResponseDto<String>> authenticate(@RequestBody LoginDto loginDto) {

@@ -40,6 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests().antMatchers(
                 "/company/authenticate",
+                "/company/signup",
                 "/admin/authenticate"
         ).permitAll()
                 .antMatchers("/company/**").hasRole("COMPANY")
